@@ -10,10 +10,18 @@ using std::endl;
 
 class Human
 {
+	static const int LAST_NAME_WIDTH = 12;
+	static const int FIRST_NAME_WIDTH = 12;
+	static const int AGE_WIDTH = 3;
+	static int count;
 	std::string last_name;
 	std::string first_name;
 	int age;
 public:
+	static int get_count()
+	{
+		return count;
+	}
 	const std::string& get_last_name()const
 	{
 		return last_name;
@@ -45,17 +53,28 @@ public:
 		set_last_name(last_name);
 		set_first_name(first_name);
 		set_age(age);
+		count++;
 		cout << "HConstructor:\t" << this << endl;
 	}
 	~Human()
 	{
+		count--;
 		cout << "HDestructor:\t" << this << endl;
 	}
 	virtual std::ostream& info(std::ostream& os)const
 	{
-		return os << last_name << " " << first_name << " " << age;
+		//return os << last_name << " " << first_name << " " << age;
+		os.width(12); //задаёт ширину вывода т.е. сколько знакопозиций будет занимать след.
+		os << std::left;  // задаём выравниивание по левому краю
+		os << last_name;
+		os.width(12);
+		os << first_name;
+		os.width(3);
+		os << age;
+		return os;
 	}
 };
+int Human::count = 0;
 
 std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
@@ -67,6 +86,7 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
 
 class AcademyMember :public Human
 {
+	static const int SPECIALITY_WIDTH = 16;
 	std::string speciality;
 public:
 	const std::string& get_speciality()const
@@ -95,7 +115,11 @@ public:
 	//               Methods:
 	std::ostream& info(std::ostream& os)const override
 	{
-		return Human::info(os) << " " << speciality;
+		//return Human::info(os) << " " << speciality;
+		Human::info(os);
+		os.width(SPECIALITY_WIDTH);
+		os << speciality;
+		return os;
 		//Human::info(os);
 		//return os << speciality << endl;
 	}
@@ -103,6 +127,9 @@ public:
 
 class Student :public AcademyMember
 {
+	static const int GROUP_WIDTH = 8;
+	static const int RATING_WIDTH = 8;
+	static const int ATTENDANCE_WIDTH = 8;
 	std::string group;
 	double rating;
 	double attendance;
@@ -153,7 +180,15 @@ public:
 	//      Methods:
 	std::ostream& info(std::ostream& os)const override
 	{
-		return AcademyMember::info(os) << " " << group << " " << rating << " " << attendance; 
+		//return AcademyMember::info(os) << " " << group << " " << rating << " " << attendance; 
+		AcademyMember::info(os);
+		os.width(GROUP_WIDTH);
+		os << group;
+		os.width(RATING_WIDTH);
+		os << rating;
+		os.width(ATTENDANCE_WIDTH);
+		os << attendance;
+		return os;
 		//AcademyMember::info(os);
 		/*
 		:: - опретор разрешения видимости (Scope operator) показывает в какой области вдимости объявлен идентификатор (функции, константа, переменная и тд.)
@@ -228,8 +263,8 @@ public:
 	}
 	std::ostream& info(std::ostream& os)const override
 	{
-		return Student::info(os) << " " << subject;
-		//Student::info(os);
+		return Student::info(os) << subject;
+		//Student::info(os); 
 		//return os << subject << endl;
 	}
 };  
@@ -283,4 +318,5 @@ void main()
 		//cout << delimiter << endl;
 		cout << *group[i] << endl;
 	}
+	cout << "Количество участников группы: " << Human::get_count() << endl;
 }
