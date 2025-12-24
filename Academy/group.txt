@@ -1,0 +1,6 @@
+Student:   Кондратенко Георний     18 РПО             Р_418   97      98      
+Teacher:   Stanne      Michael     55 Vocals           40
+Student:   Щербаков    Илья        15 РПО             Р_418   100     99.9    
+Teacher:   Henriksson  Martin      50 Bass guitar      40
+Student:   Татевосян   Элеонора    17 РПО             Р_418   98      48      
+Graduate:  Пензин      Богдан      15 РПО             Р_418   98      99      Мнение и этическая позиция подростков на развитие искуственного интеллекта (AGI - Artifical General Intelligence)
