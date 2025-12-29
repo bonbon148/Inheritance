@@ -83,6 +83,11 @@ public:
 		ofs << last_name << " " << first_name << " " << age;
 		return ofs; 
 	}
+	virtual std::ifstream& read(std::ifstream& ifs)
+	{
+		ifs >> last_name >> first_name >> age;
+		return ifs;
+	}
 };
 int Human::count = 0;
 
@@ -97,6 +102,11 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
 	//obj.write(ofs);
 	//return ofs;
 //}
+std::ifstream& operator>>(std::ifstream& ifs, Human& obj)
+{
+	obj.read(ifs);
+	return ifs;
+}
 
 class AcademyMember :public Human
 {
@@ -142,6 +152,18 @@ public:
 		Human::write(ofs);
 		ofs << " " << speciality;
 		return ofs;
+	}
+	std::ifstream& read(std::ifstream& ifs)override
+	{
+		Human::read(ifs);
+		char buffer[SPECIALITY_WIDTH + 1] = {}; 
+		ifs.read(buffer, SPECIALITY_WIDTH);	
+		//cout << buffer << endl;
+		for (int i = SPECIALITY_WIDTH - 2; buffer[i] == ' '; i--)buffer[i] = 0;
+		while (buffer[0] == ' ')
+			for (int i = 0; buffer[i]; i++)buffer[i] = buffer[i + 1];
+		this->speciality = buffer;
+		return ifs;
 	}
 };
 
@@ -211,7 +233,7 @@ public:
 		return os;
 		//AcademyMember::info(os);
 		/*
-		:: - опретор разрешения видимости (Scope operator) показывает в какой области вдимости объявлен идентификатор (функции, константа, переменная и тд.)
+		:: - Oпретор разрешения видимости (Scope operator) показывает в какой области вдимости объявлен идентификатор (функции, константа, переменная и тд.)
 		*/
 		//return os << group << " " << rating << " " << attendance << endl;
 	}
@@ -220,6 +242,12 @@ public:
 		AcademyMember::write(ofs);
 		ofs << " " << group << " " << rating << " " << attendance;
 		return ofs;
+	}
+	std::ifstream& read(std::ifstream& ifs)override
+	{
+		AcademyMember::read(ifs);
+		ifs >> group >> rating >> attendance;
+		return ifs;
 	}
 };
 
@@ -264,6 +292,12 @@ public:
 		ofs << " " << experience;
 		return ofs;
 	}
+	std::ifstream& read(std::ifstream& ifs)override
+	{
+		AcademyMember::read(ifs);
+		ifs >> experience;
+		return ifs;
+	}
 };
 class Graduate :public Student
 {
@@ -304,6 +338,12 @@ public:
 		Student::write(ofs);
 		ofs << " " << subject;
         return ofs;
+	}
+	std::ifstream& read(std::ifstream& ifs)
+	{
+		Student::read(ifs);
+		std::getline(ifs, subject);
+		return ifs;
 	}
 };  
 
@@ -372,6 +412,8 @@ Human** Load(const std::string& filename, int& n)
 			std::getline(fin, buffer, ':'); 
 			if (buffer.size() == 0)continue;
 			group[i] = Factory(buffer.c_str()); 
+			if (group[i])fin >> *group[i];
+			else i--;
 		}
 
 	}
