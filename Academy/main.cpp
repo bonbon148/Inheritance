@@ -482,3 +482,18 @@ void main()
 	Human** group = Load("P_418.txt", n);
 	Print(group, n);
 }
+
+/*
+-----------------------
+//Pure-virtual function (Чисто-виртуальный метод):
+virtual type name(parameters)modifiers = 0;
+//Прототип функции (Объявление функции - Function declaration)
+-----------------------
+//Реализация функции (Определение функции - Function definition)
+{
+   ....;
+   group-of-statemets;
+   ....;
+}
+-----------------------
+*/
