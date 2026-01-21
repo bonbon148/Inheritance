@@ -153,7 +153,7 @@ namespace Geometry
 			SelectObject(hdc, hbrush);
 
 			//5) Рисуем фигуру:
-		    ::Rectangle(hdc, start_x, start_y, start_x + side, start_y + side);
+			::Rectangle(hdc, start_x, start_y, start_x + side, start_y + side);
 
 			/*
 
@@ -278,20 +278,150 @@ namespace Geometry
 			ReleaseDC(hwnd, hdc);
 		}
 	};
+	class Triangle :public Shape
+	{
+	public:
+		Triangle(SHAPE_TAKE_PARAMETERS) :Shape(SHAPE_GIVE_PARAMETERS) {}
+		~Triangle() {}
+		virtual double get_height()const = 0;
+	};
+	class EquilateraTriangle :public Triangle
+	{
+		double side;
+	public:
+		double get_side()const
+		{
+			return side;
+		}
+		void set_side(double side)
+		{
+			this->side = filter_size(side);
+		}
+		EquilateraTriangle(double side, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		{
+			set_side(side);
+		}
+		~EquilateraTriangle() {}
+		double get_height()const override
+		{
+			return sqrt(pow(side, 2) - pow(side / 2, 2));
+		}
+		double get_area()const override
+		{
+			return side / 2 * get_height();
+		}
+		double get_perimeter()const override
+		{
+			return 3 * side;
+		}
+		void draw()const override
+		{
+			HWND hwnd = GetConsoleWindow();
+			HDC hdc = GetDC(hwnd);
+			HPEN hpen = CreatePen(PS_SOLID, line_width, color);
+			HBRUSH hbrush = CreateSolidBrush(color);
+			SelectObject(hdc, hpen);
+			SelectObject(hdc, hbrush);
+
+
+			POINT vertices[] =
+			{
+				{start_x + (int)side / 2,start_y},
+				{start_x + side, start_y + get_height()},
+				{start_x, start_y + get_height()},
+
+			};
+			Polygon(hdc, vertices, 3); //vertices - вершина, массив углов/вершин
+
+			DeleteObject(hbrush);
+			DeleteObject(hpen);
+			ReleaseDC(hwnd, hdc);
+		}
+
+	};
+	class IsoscelesTriangle :public Triangle
+	{
+		double base;
+		double side;
+	public:
+		double get_base()const
+		{
+			return base;
+		}
+		double get_side()const
+		{
+			return side;
+		}
+		void set_base(double base)
+		{
+			this->base = filter_size(base);
+		}
+		void set_side(double side)
+		{
+			this->side = filter_size(side);
+		}
+		IsoscelesTriangle(double base, double side, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		{
+			set_base(base);
+			set_side(side);
+		}
+		~IsoscelesTriangle() {}
+		double get_height()const override
+		{
+			return sqrt(pow(side, 2) - pow(base / 2, 2));
+		}
+		double get_area()const override
+		{
+			return base / 2 * get_height();
+		}
+		double get_perimeter()const override
+		{
+			return base + 2 * side;
+		}
+		void draw()const override
+		{
+			HWND hwnd = GetConsoleWindow();
+			HDC hdc = GetDC(hwnd);
+			HPEN hpen = CreatePen(PS_SOLID, line_width, color);
+			HBRUSH hbrush = CreateSolidBrush(color);
+			SelectObject(hdc, hpen);
+			SelectObject(hdc, hbrush);
+
+			POINT vertices[] =
+			{
+				{start_x + base / 2,start_y},
+				{start_x + base, start_y + get_height()},
+				{start_x, start_y + get_height()},
+			};
+			Polygon(hdc, vertices, 3);
+
+
+			DeleteObject(hbrush);
+			DeleteObject(hpen);
+			ReleaseDC(hwnd, hdc);
+		}
+
+	};
 }
 void main()
 {
 	setlocale(LC_ALL, "");
 	//Shape shape = Color::Red;
-	Geometry::Square square(50000, -300, -300, 1, Geometry::Color::White);
+	//Geometry::Square square(50000, -300, -300, 1, Geometry::Color::White);
 	/*cout << "Сторона квадрата: " << square.get_side() << endl;
 	cout << "Площадь фигурны: " << square.get_area() << endl;
 	cout << "Периметр фигуры: " << square.get_perimeter() << endl;*/
-	square.info();
+	//square.info();
 
-	Geometry::Rectangle rect(200, 100, 500, 300, 5, Geometry::Color::Red);
-	rect.info();
+	//Geometry::Rectangle rect(200, 100, 500, 300, 5, Geometry::Color::Red);
+	//rect.info();
 
-	Geometry::Circle circle(150, 700, 300, 5, Geometry::Color::Yellow);
-	circle.info();
+	//::Circle circle(150, 700, 300, 5, Geometry::Color::Yellow);
+	//circle.info();
+
+	Geometry::EquilateraTriangle e_triangle(180, 500, 200, 32, Geometry::Color::Green);
+	e_triangle.info();
+
+	Geometry::IsoscelesTriangle iso_triangle(100, 80, 700, 400, 32, Geometry::Color::Purple);
+	iso_triangle.draw();
 }
