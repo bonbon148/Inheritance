@@ -3,6 +3,9 @@
 #include<iostream>
 using namespace std;
 
+//#define SQUARE_FULL
+//#define EQUILATERAL_FULL
+
 //Enumeration - enum
 namespace Geometry
 {
@@ -106,6 +109,8 @@ namespace Geometry
 			draw();
 		}
 	};
+	
+#ifdef SQUARE_FULL
 	class Square :public Shape
 	{
 		double side;
@@ -185,6 +190,8 @@ namespace Geometry
 			Shape::info();
 		}
 	};
+#endif // SQUARE_FULL
+
 
 	class Rectangle :public Shape
 	{
@@ -234,7 +241,7 @@ namespace Geometry
 			::Rectangle(hdc, start_x, start_y, start_x + width, start_y + height);
 			::MoveToEx(hdc, start_x, start_y, NULL);
 			::LineTo(hdc, start_x + width, start_y + height);
-			
+
 
 
 			DeleteObject(hbrush);
@@ -242,6 +249,13 @@ namespace Geometry
 			ReleaseDC(hwnd, hdc);
 		}
 	};
+	class Square :public Rectangle
+	{
+	public:
+		Square(double side, SHAPE_TAKE_PARAMETERS):Rectangle(side, side, SHAPE_GIVE_PARAMETERS) {}
+		~Square() {}
+	};
+
 	class Circle :public Shape
 	{
 		double radius;
@@ -298,6 +312,7 @@ namespace Geometry
 			Shape::info();
 		}
 	};
+#ifdef EQUILATERAL_FULL
 	class EquilateraTriangle :public Triangle
 	{
 		double side;
@@ -355,6 +370,8 @@ namespace Geometry
 		}
 
 	};
+#endif // EQUILATERAL_FULL
+
 	class IsoscelesTriangle :public Triangle
 	{
 		double base;
@@ -420,13 +437,21 @@ namespace Geometry
 			ReleaseDC(hwnd, hdc);
 		}
 	};
+
+	class EquilateralTriangle :public IsoscelesTriangle
+	{
+	public:
+		EquilateralTriangle(double side, SHAPE_TAKE_PARAMETERS):IsoscelesTriangle(side, side, SHAPE_GIVE_PARAMETERS) {}
+		~EquilateralTriangle() {}
+	};
+
 	class RightTriangle :public Triangle
 	{
 		double cathet_1;
 		double cathet_2;
 	public:
 		double get_cathet_1()const
-		{ 
+		{
 			return cathet_1;
 		}
 		double get_cathet_2()const
@@ -502,9 +527,9 @@ void main()
 	rect.info();
 
 	Geometry::Circle circle(150, 700, 100, 5, Geometry::Color::Yellow);
-	circle.info(); 
+	circle.info();
 
-	Geometry::EquilateraTriangle e_triangle(180, 450, 350, 8, Geometry::Color::Green);
+	Geometry::EquilateralTriangle e_triangle(180, 450, 350, 8, Geometry::Color::Green);
 	e_triangle.info();
 
 	Geometry::IsoscelesTriangle iso_triangle(100, 80, 700, 500, 8, Geometry::Color::Purple);
@@ -514,7 +539,7 @@ void main()
 	r_triangle.info();
 	//Instance - экземпляр;
 	//Instantiate - создать экземпляр;
-	while(true)
+	while (true)
 	{
 		square.draw();
 		rect.draw();
