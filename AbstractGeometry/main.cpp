@@ -292,8 +292,10 @@ namespace Geometry
 			SelectObject(hdc, hbrush);
 
 			Ellipse(hdc, start_x, start_y, start_x + 2 * radius, start_y + 2 * radius);
-			::MoveToEx(hdc, start_x + radius, start_y + radius, NULL);
-			LineTo(hdc, start_x + radius * 2, start_y + radius);
+			MoveToEx(hdc, start_x + radius, start_y + radius, NULL);
+			int degree = 100;
+			double angle = degree * M_PI / 180;
+			LineTo(hdc, (start_x + radius) + radius*cos(angle), (start_y + radius) + radius*sin(angle));
 
 			DeleteObject(hbrush);
 			DeleteObject(hpen);
